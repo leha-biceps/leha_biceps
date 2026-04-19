@@ -61,12 +61,15 @@
 
   /* noise overlay on text via canvas */
   .title-wrap { position: relative; display: inline-block; margin-bottom: 28px; }
-  canvas#noiseOverlay {
+  .title-wrap::after {
+    content: '';
     position: absolute; inset: 0;
     pointer-events: none;
-    mix-blend-mode: overlay;
-    opacity: 0.18;
     border-radius: 4px;
+    opacity: 0.09;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
   }
 
 
@@ -114,6 +117,30 @@
     align-items: center; justify-content: center;
     min-width: 0;
     overflow: hidden;
+  }
+
+  .rive-meta {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    pointer-events: none;
+    opacity: 0.35;
+    transition: opacity 0.25s;
+  }
+  .tile:hover .rive-meta { opacity: 1; }
+  .rive-date {
+    font-size: 10px;
+    color: #9a9a98;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .rive-label {
+    font-size: 11px;
+    color: #6b6b69;
+    letter-spacing: 0.04em;
   }
 
   /* placeholder tiles */
@@ -256,7 +283,7 @@
       <span class="hero-title-text">Interface details.</span>
     </h1>
     <div class="hero-glow"></div>
-    <canvas id="noiseOverlay"></canvas>
+
   
   </div>
   <p class="hero-desc">A collection of UI micro-solutions — interactions, components, and patterns I design and build. Each piece solves one specific problem.</p>
@@ -404,23 +431,23 @@
   </div>
 
   <!-- Rive tile -->
-  <div class="tile tile-placeholder">
-    <div class="tile-date">May 2025</div>
-    <div class="tile-content" style="width:100%;align-items:stretch">
-      <div style="position:relative;width:100%;flex:1;border-radius:5px;overflow:hidden;background:#0f0f0e;border:1px solid #1a1a18;min-height:140px">
-        <!-- REPLACE: swap the canvas+script below with your .riv file -->
-        <canvas id="rive-canvas-1" style="width:100%;height:100%;display:block"></canvas>
-        <div id="rive-placeholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;pointer-events:none">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="14" cy="14" r="13" stroke="#252523" stroke-width="1"/>
-            <polygon points="11,9 21,14 11,19" fill="#252523"/>
-          </svg>
-          <span style="font-size:10px;color:#2a2a28;letter-spacing:0.08em">RIVE ANIMATION</span>
-        </div>
-        <!-- END REPLACE -->
+  <div class="tile tile-placeholder" style="padding:0;overflow:hidden;">
+    <div style="position:relative;width:100%;height:100%;">
+      <!-- REPLACE: swap canvas below with your .riv setup -->
+      <canvas id="rive-canvas-1" style="width:100%;height:100%;display:block;background:#0f0f0e;"></canvas>
+      <div id="rive-placeholder" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="14" cy="14" r="13" stroke="#252523" stroke-width="1"/>
+          <polygon points="11,9 21,14 11,19" fill="#252523"/>
+        </svg>
+        <span style="font-size:10px;color:#2a2a28;letter-spacing:0.08em">RIVE ANIMATION</span>
+      </div>
+      <!-- END REPLACE -->
+      <div class="rive-meta">
+        <span class="rive-date">07 May 2025</span>
+        <span class="rive-label">Your Rive component</span>
       </div>
     </div>
-    <div class="tile-label">Your Rive component</div>
   </div>
 
   <!-- Placeholder 2 -->
@@ -447,30 +474,7 @@
 </div>
 
 <script>
-window.addEventListener('load', () => {
-  resizeNoise();
-});
-window.addEventListener('resize', resizeNoise);
 
-function resizeNoise() {
-  const title = document.querySelector('.title-wrap h1');
-  const c = document.getElementById('noiseOverlay');
-  if (!title || !c) return;
-  const r = title.getBoundingClientRect();
-  if (!r.width || !r.height) return;
-  c.width = Math.floor(r.width);
-  c.height = Math.floor(r.height);
-  c.style.width = r.width + 'px';
-  c.style.height = r.height + 'px';
-  const ctx = c.getContext('2d');
-  const img = ctx.createImageData(c.width, c.height);
-  for (let i = 0; i < img.data.length; i += 4) {
-    const v = Math.random() * 255;
-    img.data[i] = img.data[i+1] = img.data[i+2] = v;
-    img.data[i+3] = 255;
-  }
-  ctx.putImageData(img, 0, 0);
-}
 
 
 

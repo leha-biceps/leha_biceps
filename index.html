@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UI Portfolio</title>
-<script src="https://cdn.jsdelivr.net/npm/@rive-app/canvas@2.23.0/rive.js"></script>
+
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { max-width: 100%; overflow-x: hidden; }
@@ -267,30 +267,29 @@
 <script>
 const RIVE_SRC = 'rive_test.riv';
 
+function loadRive(callback) {
+  const s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/@rive-app/canvas@2.23.0/rive.js';
+  s.onload = callback;
+  s.onerror = () => console.warn('Failed to load Rive script');
+  document.head.appendChild(s);
+}
+
 function initRive(canvasId, src) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
-  try {
-    new RiveCanvas.Rive({
-      src,
-      canvas,
-      autoplay: true,
-      fit: RiveCanvas.Fit.Cover,
-      alignment: RiveCanvas.Alignment.Center,
-      onLoadError: (e) => { console.warn('Rive load error', e); },
-    });
-  } catch(e) {
-    try {
-      new Rive({
-        src, canvas, autoplay: true,
-        fit: Fit.Cover, alignment: Alignment.Center,
-      });
-    } catch(e2) { console.warn('Rive init failed', e2); }
-  }
+  new rive.Rive({
+    src,
+    canvas,
+    autoplay: true,
+    fit: rive.Fit.Cover,
+    alignment: rive.Alignment.Center,
+    onLoadError: (e) => console.warn('Rive file error', e),
+  });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => { initRive('rive-1', RIVE_SRC); }, 300);
+loadRive(() => {
+  initRive('rive-1', RIVE_SRC);
 });
 </script>
 </body>

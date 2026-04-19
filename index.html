@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UI Portfolio</title>
-
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { max-width: 100%; overflow-x: hidden; }
@@ -83,7 +82,6 @@
     z-index: 2;
   }
 
-  /* Rive canvas fills the tile */
   .tile-rive-canvas {
     position: absolute;
     inset: 0;
@@ -93,7 +91,6 @@
     background: #0f0f0e;
   }
 
-  /* Placeholder shown when no rive loaded */
   .tile-placeholder-icon {
     position: absolute;
     inset: 0;
@@ -105,11 +102,8 @@
     pointer-events: none;
   }
   .tile-placeholder-icon svg { opacity: 0.15; }
-  .tile-placeholder-icon span {
-    font-size: 10px; color: #2a2a28; letter-spacing: 0.08em;
-  }
+  .tile-placeholder-icon span { font-size: 10px; color: #2a2a28; letter-spacing: 0.08em; }
 
-  /* Meta overlay: date top-left, label bottom-left */
   .tile-meta {
     position: absolute;
     inset: 0;
@@ -123,17 +117,8 @@
   }
   .tile:hover .tile-meta { opacity: 0.3; }
 
-  .tile-date {
-    font-size: 10px;
-    color: #9a9a98;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-  .tile-label {
-    font-size: 11px;
-    color: #6b6b69;
-    letter-spacing: 0.04em;
-  }
+  .tile-date { font-size: 10px; color: #9a9a98; letter-spacing: 0.1em; text-transform: uppercase; }
+  .tile-label { font-size: 11px; color: #6b6b69; letter-spacing: 0.04em; }
 
   @media (hover: none) {
     .tile:hover {
@@ -143,6 +128,8 @@
     }
     .tile:hover .tile-meta { opacity: 0.75; }
   }
+
+  @media (max-width: 800px) {
     body { padding: 48px 20px 80px; }
     .grid { grid-template-columns: repeat(2, 1fr); }
   }
@@ -169,7 +156,6 @@
 
 <div class="grid">
 
-  <!-- Tile 1: real Rive file -->
   <div class="tile">
     <canvas class="tile-rive-canvas" id="rive-1"></canvas>
     <div class="tile-meta">
@@ -178,7 +164,6 @@
     </div>
   </div>
 
-  <!-- Tile 2 -->
   <div class="tile">
     <canvas class="tile-rive-canvas" id="rive-2"></canvas>
     <div class="tile-placeholder-icon" id="ph-2">
@@ -191,7 +176,6 @@
     </div>
   </div>
 
-  <!-- Tile 3 -->
   <div class="tile">
     <canvas class="tile-rive-canvas" id="rive-3"></canvas>
     <div class="tile-placeholder-icon" id="ph-3">
@@ -204,7 +188,6 @@
     </div>
   </div>
 
-  <!-- Tile 4 -->
   <div class="tile">
     <canvas class="tile-rive-canvas" id="rive-4"></canvas>
     <div class="tile-placeholder-icon" id="ph-4">
@@ -217,7 +200,6 @@
     </div>
   </div>
 
-  <!-- Tile 5 -->
   <div class="tile">
     <canvas class="tile-rive-canvas" id="rive-5"></canvas>
     <div class="tile-placeholder-icon" id="ph-5">
@@ -230,7 +212,6 @@
     </div>
   </div>
 
-  <!-- Tile 6 -->
   <div class="tile">
     <canvas class="tile-rive-canvas" id="rive-6"></canvas>
     <div class="tile-placeholder-icon" id="ph-6">
@@ -243,7 +224,6 @@
     </div>
   </div>
 
-  <!-- Tile 7 -->
   <div class="tile">
     <canvas class="tile-rive-canvas" id="rive-7"></canvas>
     <div class="tile-placeholder-icon" id="ph-7">
@@ -256,7 +236,6 @@
     </div>
   </div>
 
-  <!-- Tile 8 -->
   <div class="tile">
     <canvas class="tile-rive-canvas" id="rive-8"></canvas>
     <div class="tile-placeholder-icon" id="ph-8">
@@ -291,15 +270,38 @@ function initRive(canvasId, src) {
   };
   resize();
   window.addEventListener('resize', resize);
-  new rive.Rive({
+
+  const r = new rive.Rive({
     src,
     canvas,
     autoplay: true,
-    stateMachines: 'State Machine 1', // ← замени на имя из твоего Rive-проекта
+    stateMachines: 'State Machine 1',
     fit: rive.Fit.Cover,
     alignment: rive.Alignment.Center,
     onLoadError: (e) => console.warn('Rive file error', e),
   });
+
+  canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const t = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    canvas.dispatchEvent(new MouseEvent('mousedown', { clientX: t.clientX - rect.left, clientY: t.clientY - rect.top, bubbles: true }));
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    const t = e.changedTouches[0];
+    const rect = canvas.getBoundingClientRect();
+    canvas.dispatchEvent(new MouseEvent('mouseup', { clientX: t.clientX - rect.left, clientY: t.clientY - rect.top, bubbles: true }));
+    canvas.dispatchEvent(new MouseEvent('click', { clientX: t.clientX - rect.left, clientY: t.clientY - rect.top, bubbles: true }));
+  }, { passive: false });
+
+  canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    const t = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    canvas.dispatchEvent(new MouseEvent('mousemove', { clientX: t.clientX - rect.left, clientY: t.clientY - rect.top, bubbles: true }));
+  }, { passive: false });
 }
 
 loadRive(() => {

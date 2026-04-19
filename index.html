@@ -278,6 +278,12 @@ function loadRive(callback) {
 function initRive(canvasId, src) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
+  const resize = () => {
+    canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+    canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+  };
+  resize();
+  window.addEventListener('resize', resize);
   new rive.Rive({
     src,
     canvas,

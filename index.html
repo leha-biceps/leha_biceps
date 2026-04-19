@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UI Portfolio</title>
-<script src="https://unpkg.com/@rive-app/canvas@latest/rive.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@rive-app/canvas@2.23.0/rive.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { max-width: 100%; overflow-x: hidden; }
@@ -72,7 +72,7 @@
     border: 1px solid #1e1e1c;
     border-radius: 8px;
     position: relative;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 4 / 3;
     overflow: hidden;
     transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s;
   }
@@ -121,7 +121,7 @@
     opacity: 0.75;
     transition: opacity 0.25s;
   }
-  .tile:hover .tile-meta { opacity: 0.08; }
+  .tile:hover .tile-meta { opacity: 0.3; }
 
   .tile-date {
     font-size: 10px;
@@ -270,18 +270,27 @@ const RIVE_SRC = 'https://raw.githubusercontent.com/leha-biceps/leha-biceps/main
 function initRive(canvasId, src) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
-  new rive.Rive({
-    src,
-    canvas,
-    autoplay: true,
-    fit: rive.Fit.Cover,
-    alignment: rive.Alignment.Center,
-    onLoadError: () => {},
-  });
+  try {
+    new RiveCanvas.Rive({
+      src,
+      canvas,
+      autoplay: true,
+      fit: RiveCanvas.Fit.Cover,
+      alignment: RiveCanvas.Alignment.Center,
+      onLoadError: (e) => { console.warn('Rive load error', e); },
+    });
+  } catch(e) {
+    try {
+      new Rive({
+        src, canvas, autoplay: true,
+        fit: Fit.Cover, alignment: Alignment.Center,
+      });
+    } catch(e2) { console.warn('Rive init failed', e2); }
+  }
 }
 
-window.addEventListener('load', () => {
-  initRive('rive-1', RIVE_SRC);
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => { initRive('rive-1', RIVE_SRC); }, 300);
 });
 </script>
 </body>

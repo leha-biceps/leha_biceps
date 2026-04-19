@@ -135,7 +135,14 @@
     letter-spacing: 0.04em;
   }
 
-  @media (max-width: 800px) {
+  @media (hover: none) {
+    .tile:hover {
+      transform: none;
+      border: 1px solid #1e1e1c;
+      box-shadow: none;
+    }
+    .tile:hover .tile-meta { opacity: 0.75; }
+  }
     body { padding: 48px 20px 80px; }
     .grid { grid-template-columns: repeat(2, 1fr); }
   }

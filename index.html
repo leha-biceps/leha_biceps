@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UI Portfolio</title>
+<script src="https://unpkg.com/@rive-app/canvas@latest/rive.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { max-width: 100%; overflow-x: hidden; }
-
   body {
     background: #0a0a0a;
     color: #e8e8e6;
@@ -17,49 +17,6 @@
   }
 
   .hero { max-width: 900px; margin-bottom: 80px; }
-
-  .hero-title {
-    font-size: clamp(52px, 8vw, 96px);
-    font-weight: 600;
-    line-height: 1.0;
-    letter-spacing: -0.03em;
-    margin-bottom: 28px;
-    position: relative;
-    display: inline-block;
-  }
-
-  .hero-title-text {
-    background: url(#noiseCanvas);
-    -webkit-background-clip: text;
-    background-clip: text;
-    position: relative;
-    z-index: 1;
-    color: transparent;
-    background-image: linear-gradient(160deg, #ffffff 0%, #c0bdb8 40%, #7a7875 80%, #3a3835 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-  }
-
-  .hero-glow {
-    position: absolute;
-    top: 50%; left: 10%;
-    transform: translate(-50%, -50%);
-    width: 320px; height: 120px;
-    background: radial-gradient(ellipse, rgba(180,160,130,0.12) 0%, transparent 70%);
-    pointer-events: none;
-    filter: blur(20px);
-    z-index: 0;
-  }
-
-  .hero-desc {
-    font-size: 15px;
-    color: #555552;
-    line-height: 1.7;
-    max-width: 440px;
-    position: relative;
-  }
-
-  /* noise overlay on text via canvas */
   .title-wrap { position: relative; display: inline-block; margin-bottom: 28px; }
   .title-wrap::after {
     content: '';
@@ -71,7 +28,37 @@
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 180px 180px;
   }
-
+  .hero-title {
+    font-size: clamp(42px, 6vw, 88px);
+    font-weight: 600;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin-bottom: 0;
+    position: relative;
+    display: inline-block;
+  }
+  .hero-title-text {
+    background-image: linear-gradient(160deg, #ffffff 0%, #c0bdb8 40%, #7a7875 80%, #3a3835 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero-glow {
+    position: absolute;
+    top: 50%; left: 10%;
+    transform: translate(-50%, -50%);
+    width: 320px; height: 120px;
+    background: radial-gradient(ellipse, rgba(180,160,130,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    filter: blur(20px);
+    z-index: 0;
+  }
+  .hero-desc {
+    font-size: 15px;
+    color: #555552;
+    line-height: 1.7;
+    max-width: 440px;
+  }
 
   .grid {
     display: grid;
@@ -84,13 +71,10 @@
     background: #141413;
     border: 1px solid #1e1e1c;
     border-radius: 8px;
-    padding: 20px;
     position: relative;
-    aspect-ratio: 4 / 3;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), border-color 0.25s, box-shadow 0.25s;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s;
   }
   .tile:hover {
     transform: scale(1.035);
@@ -99,168 +83,57 @@
     z-index: 2;
   }
 
-  .tile-date {
-    font-size: 10px;
-    color: #2e2e2c;
-    letter-spacing: 0.1em;
-    font-variant-numeric: tabular-nums;
-    text-transform: uppercase;
-  }
-  .tile-label {
-    font-size: 11px;
-    color: #3a3a38;
-    letter-spacing: 0.04em;
-    margin-top: auto;
-  }
-  .tile-content {
-    flex: 1; display: flex;
-    align-items: center; justify-content: center;
-    min-width: 0;
-    overflow: hidden;
+  /* Rive canvas fills the tile */
+  .tile-rive-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: #0f0f0e;
   }
 
-  .rive-meta {
+  /* Placeholder shown when no rive loaded */
+  .tile-placeholder-icon {
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    padding: 20px;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    pointer-events: none;
+  }
+  .tile-placeholder-icon svg { opacity: 0.15; }
+  .tile-placeholder-icon span {
+    font-size: 10px; color: #2a2a28; letter-spacing: 0.08em;
+  }
+
+  /* Meta overlay: date top-left, label bottom-left */
+  .tile-meta {
+    position: absolute;
+    inset: 0;
+    padding: 18px 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     pointer-events: none;
-    opacity: 0.35;
+    opacity: 0.75;
     transition: opacity 0.25s;
   }
-  .tile:hover .rive-meta { opacity: 1; }
-  .rive-date {
+  .tile:hover .tile-meta { opacity: 0.08; }
+
+  .tile-date {
     font-size: 10px;
     color: #9a9a98;
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
-  .rive-label {
+  .tile-label {
     font-size: 11px;
     color: #6b6b69;
     letter-spacing: 0.04em;
   }
-
-  /* placeholder tiles */
-  .tile-placeholder .tile-content {
-    flex-direction: column; gap: 10px; align-items: center; justify-content: center;
-  }
-  .placeholder-icon {
-    width: 36px; height: 36px; border-radius: 50%;
-    border: 1px solid #1e1e1c;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .placeholder-icon svg { opacity: 0.2; }
-  .placeholder-bars { display: flex; gap: 4px; align-items: flex-end; height: 28px; }
-  .placeholder-bars span {
-    width: 6px; background: #1e1e1c; border-radius: 2px;
-  }
-  .placeholder-text-lines { display: flex; flex-direction: column; gap: 5px; width: 80%; }
-  .placeholder-text-lines span {
-    height: 7px; background: #1a1a18; border-radius: 3px;
-  }
-
-  /* Toggle */
-  .toggle { position: relative; width: 44px; height: 24px; cursor: pointer; flex-shrink: 0; }
-  .toggle input { display: none; }
-  .track {
-    position: absolute; inset: 0;
-    background: #1a1a18; border-radius: 12px;
-    border: 1px solid #252523;
-    transition: background 0.2s;
-  }
-  .toggle input:checked + .track { background: #e8e8e6; }
-  .thumb {
-    position: absolute; top: 3px; left: 3px;
-    width: 18px; height: 18px;
-    background: #404040; border-radius: 50%;
-    transition: transform 0.2s, background 0.2s;
-  }
-  .toggle input:checked ~ .thumb { transform: translateX(20px); background: #0a0a0a; }
-  .toggle-label { font-size: 12px; color: #555552; }
-
-  /* Slider */
-  .slider-track {
-    position: relative; height: 2px;
-    background: #1e1e1c; border-radius: 1px; margin: 12px 0;
-  }
-  .slider-fill { position: absolute; height: 100%; background: #e8e8e6; border-radius: 1px; transition: width 0.05s; }
-  .slider-input { position: absolute; inset: -8px 0; opacity: 0; cursor: pointer; width: 100%; }
-  .slider-value { font-size: 26px; font-weight: 500; color: #e8e8e6; letter-spacing: -0.02em; }
-  .slider-sub { font-size: 10px; color: #2e2e2c; letter-spacing: 0.08em; margin-top: 2px; }
-
-  /* Radio */
-  .radio-group { display: flex; flex-direction: column; gap: 6px; width: 100%; }
-  .radio-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 9px 12px;
-    border: 1px solid #1a1a18; border-radius: 5px;
-    cursor: pointer; transition: border-color 0.15s, background 0.15s;
-    font-size: 12px; color: #555552;
-  }
-  .radio-item:hover { border-color: #252523; background: #111110; }
-  .radio-item.active { border-color: #303030; color: #e8e8e6; }
-  .radio-dot {
-    width: 14px; height: 14px; border-radius: 50%;
-    border: 1.5px solid #303030; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .radio-item.active .radio-dot { border-color: #c0bdb8; }
-  .radio-inner { width: 6px; height: 6px; border-radius: 50%; background: #c0bdb8; opacity: 0; transition: opacity 0.15s; }
-  .radio-item.active .radio-inner { opacity: 1; }
-
-  /* Steps */
-  .steps { display: flex; align-items: center; width: 100%; }
-  .step { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
-  .step-dot {
-    width: 22px; height: 22px; border-radius: 50%;
-    border: 1px solid #252523;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 9px; color: #2e2e2c; transition: all 0.2s; background: #141413;
-  }
-  .step.done .step-dot { background: #e8e8e6; border-color: #e8e8e6; color: #0a0a0a; }
-  .step.active .step-dot { border-color: #c0bdb8; color: #c0bdb8; }
-  .step-line { height: 1px; flex: 1; background: #1a1a18; margin-top: -18px; }
-  .step-line.done { background: #e8e8e6; }
-  .step-text { font-size: 9px; color: #2e2e2c; letter-spacing: 0.04em; }
-  .step.active .step-text, .step.done .step-text { color: #555552; }
-
-  /* Tags */
-  .tag-input-wrap {
-    width: 100%; display: flex; flex-wrap: wrap; gap: 5px;
-    padding: 9px; border: 1px solid #1a1a18; border-radius: 5px;
-    cursor: text; min-height: 58px; align-items: flex-start; background: #0f0f0e;
-  }
-  .tag { background: #1a1a18; border-radius: 3px; padding: 3px 7px; font-size: 11px; color: #888886; display: flex; align-items: center; gap: 5px; }
-  .tag-x { color: #303030; cursor: pointer; font-size: 13px; }
-  .tag-x:hover { color: #888886; }
-  .tag-input { background: none; border: none; outline: none; font-size: 11px; color: #555552; min-width: 70px; flex: 1; font-family: inherit; }
-  .tag-input::placeholder { color: #252523; }
-
-  /* Accordion */
-  .accordion { width: 100%; display: flex; flex-direction: column; gap: 2px; }
-  .acc-item { border: 1px solid #1a1a18; border-radius: 4px; overflow: hidden; }
-  .acc-head { padding: 9px 11px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 11px; color: #555552; transition: background 0.15s; }
-  .acc-head:hover { background: #111110; }
-  .acc-head.open { color: #e8e8e6; }
-  .acc-arrow { font-size: 9px; color: #2e2e2c; transition: transform 0.2s; }
-  .acc-head.open .acc-arrow { transform: rotate(180deg); }
-  .acc-body { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; font-size: 10px; color: #2e2e2c; line-height: 1.6; }
-  .acc-body.open { max-height: 80px; }
-  .acc-body-inner { padding: 0 11px 9px; }
-
-  /* Segmented */
-  .seg-wrap { background: #111110; border-radius: 5px; padding: 3px; display: inline-flex; border: 1px solid #1a1a18; }
-  .seg-btn { padding: 6px 14px; border-radius: 3px; font-size: 11px; color: #404040; cursor: pointer; transition: all 0.15s; border: none; background: none; font-family: inherit; }
-  .seg-btn.active { background: #1e1e1c; color: #e8e8e6; }
-
-  /* Swatch */
-  .swatch { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; transition: transform 0.15s; position: relative; }
-  .swatch:hover { transform: scale(1.1); }
-  .swatch.active::after { content: ''; position: absolute; inset: -3px; border: 1.5px solid #e8e8e6; border-radius: 50%; }
-  .swatch-preview { width: 64px; height: 64px; border-radius: 5px; transition: background 0.2s; border: 1px solid #1a1a18; }
 
   @media (max-width: 800px) {
     body { padding: 48px 20px 80px; }
@@ -283,256 +156,133 @@
       <span class="hero-title-text">Interface details.</span>
     </h1>
     <div class="hero-glow"></div>
-
-  
   </div>
   <p class="hero-desc">A collection of UI micro-solutions — interactions, components, and patterns I design and build. Each piece solves one specific problem.</p>
 </div>
 
 <div class="grid">
 
-  <!-- Toggle -->
+  <!-- Tile 1: real Rive file -->
   <div class="tile">
-    <div class="tile-date">12 Jan 2025</div>
-    <div class="tile-content">
-      <div style="display:flex;flex-direction:column;gap:10px;width:100%">
-        <div style="display:flex;align-items:center;gap:12px">
-          <label class="toggle"><input type="checkbox" id="t1"><div class="track"></div><div class="thumb"></div></label>
-          <span class="toggle-label">Notifications</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px">
-          <label class="toggle"><input type="checkbox" checked><div class="track"></div><div class="thumb"></div></label>
-          <span class="toggle-label">Dark mode</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px">
-          <label class="toggle"><input type="checkbox"><div class="track"></div><div class="thumb"></div></label>
-          <span class="toggle-label">Auto-save</span>
-        </div>
-      </div>
+    <canvas class="tile-rive-canvas" id="rive-1"></canvas>
+    <div class="tile-meta">
+      <span class="tile-date">12 Jan 2025</span>
+      <span class="tile-label">Toggle states</span>
     </div>
-    <div class="tile-label">Toggle states</div>
   </div>
 
-  <!-- Slider -->
+  <!-- Tile 2 -->
   <div class="tile">
-    <div class="tile-date">03 Feb 2025</div>
-    <div class="tile-content" style="flex-direction:column;align-items:flex-start;width:100%">
-      <div id="sliderVal" class="slider-value">64</div>
-      <div class="slider-sub">OPACITY</div>
-      <div style="width:100%;margin-top:10px">
-        <div class="slider-track">
-          <div class="slider-fill" id="sliderFill" style="width:64%"></div>
-          <input class="slider-input" type="range" min="0" max="100" value="64" id="sliderInput">
-        </div>
-      </div>
+    <canvas class="tile-rive-canvas" id="rive-2"></canvas>
+    <div class="tile-placeholder-icon" id="ph-2">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#444" stroke-width="1"/><polygon points="11,9 21,14 11,19" fill="#444"/></svg>
+      <span>RIVE ANIMATION</span>
     </div>
-    <div class="tile-label">Range input</div>
+    <div class="tile-meta">
+      <span class="tile-date">03 Feb 2025</span>
+      <span class="tile-label">Range input</span>
+    </div>
   </div>
 
-  <!-- Radio -->
+  <!-- Tile 3 -->
   <div class="tile">
-    <div class="tile-date">Feb 2025</div>
-    <div class="tile-content" style="width:100%;align-items:flex-start">
-      <div class="radio-group">
-        <div class="radio-item active">
-          <div class="radio-dot"><div class="radio-inner"></div></div>Monthly
-        </div>
-        <div class="radio-item">
-          <div class="radio-dot"><div class="radio-inner"></div></div>Yearly
-          <span style="margin-left:auto;font-size:10px;color:#2a6a4a">–20%</span>
-        </div>
-        <div class="radio-item">
-          <div class="radio-dot"><div class="radio-inner"></div></div>Lifetime
-        </div>
-      </div>
+    <canvas class="tile-rive-canvas" id="rive-3"></canvas>
+    <div class="tile-placeholder-icon" id="ph-3">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#444" stroke-width="1"/><polygon points="11,9 21,14 11,19" fill="#444"/></svg>
+      <span>RIVE ANIMATION</span>
     </div>
-    <div class="tile-label">Radio selection</div>
+    <div class="tile-meta">
+      <span class="tile-date">14 Feb 2025</span>
+      <span class="tile-label">Radio selection</span>
+    </div>
   </div>
 
-  <!-- Steps -->
+  <!-- Tile 4 -->
   <div class="tile">
-    <div class="tile-date">Mar 2025</div>
-    <div class="tile-content" style="width:100%;flex-direction:column;gap:14px">
-      <div class="steps" id="stepsRow">
-        <div class="step done"><div class="step-dot">✓</div><div class="step-text">Info</div></div>
-        <div class="step-line done"></div>
-        <div class="step active"><div class="step-dot">2</div><div class="step-text">Review</div></div>
-        <div class="step-line"></div>
-        <div class="step"><div class="step-dot">3</div><div class="step-text">Pay</div></div>
-        <div class="step-line"></div>
-        <div class="step"><div class="step-dot">4</div><div class="step-text">Done</div></div>
-      </div>
-      <div style="display:flex;gap:5px">
-        <button onclick="stepBack()" style="flex:1;padding:6px;background:#111110;border:1px solid #1a1a18;border-radius:4px;color:#404040;font-size:10px;cursor:pointer;font-family:inherit">← Back</button>
-        <button onclick="stepNext()" style="flex:1;padding:6px;background:#1e1e1c;border:1px solid #252523;border-radius:4px;color:#e8e8e6;font-size:10px;cursor:pointer;font-family:inherit">Next →</button>
-      </div>
+    <canvas class="tile-rive-canvas" id="rive-4"></canvas>
+    <div class="tile-placeholder-icon" id="ph-4">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#444" stroke-width="1"/><polygon points="11,9 21,14 11,19" fill="#444"/></svg>
+      <span>RIVE ANIMATION</span>
     </div>
-    <div class="tile-label">Progress stepper</div>
+    <div class="tile-meta">
+      <span class="tile-date">02 Mar 2025</span>
+      <span class="tile-label">Progress stepper</span>
+    </div>
   </div>
 
-  <!-- Tags -->
+  <!-- Tile 5 -->
   <div class="tile">
-    <div class="tile-date">Mar 2025</div>
-    <div class="tile-content" style="width:100%;align-items:flex-start">
-      <div class="tag-input-wrap" onclick="document.getElementById('tagInput').focus()">
-        <div class="tag">design <span class="tag-x" onclick="removeTag(this)">×</span></div>
-        <div class="tag">ui <span class="tag-x" onclick="removeTag(this)">×</span></div>
-        <div class="tag">motion <span class="tag-x" onclick="removeTag(this)">×</span></div>
-        <input class="tag-input" id="tagInput" placeholder="add tag..." onkeydown="handleTag(event)">
-      </div>
+    <canvas class="tile-rive-canvas" id="rive-5"></canvas>
+    <div class="tile-placeholder-icon" id="ph-5">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#444" stroke-width="1"/><polygon points="11,9 21,14 11,19" fill="#444"/></svg>
+      <span>RIVE ANIMATION</span>
     </div>
-    <div class="tile-label">Tag input</div>
+    <div class="tile-meta">
+      <span class="tile-date">18 Mar 2025</span>
+      <span class="tile-label">Tag input</span>
+    </div>
   </div>
 
-  <!-- Accordion -->
+  <!-- Tile 6 -->
   <div class="tile">
-    <div class="tile-date">Apr 2025</div>
-    <div class="tile-content" style="width:100%;align-items:flex-start">
-      <div class="accordion">
-        <div class="acc-item">
-          <div class="acc-head open" onclick="toggleAcc(this)">What is included? <span class="acc-arrow">▾</span></div>
-          <div class="acc-body open"><div class="acc-body-inner">Full source files, documentation and lifetime updates.</div></div>
-        </div>
-        <div class="acc-item">
-          <div class="acc-head" onclick="toggleAcc(this)">Refund policy <span class="acc-arrow">▾</span></div>
-          <div class="acc-body"><div class="acc-body-inner">30-day no-questions refund if not satisfied.</div></div>
-        </div>
-        <div class="acc-item">
-          <div class="acc-head" onclick="toggleAcc(this)">License <span class="acc-arrow">▾</span></div>
-          <div class="acc-body"><div class="acc-body-inner">Single-user commercial license. Team plans separate.</div></div>
-        </div>
-      </div>
+    <canvas class="tile-rive-canvas" id="rive-6"></canvas>
+    <div class="tile-placeholder-icon" id="ph-6">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#444" stroke-width="1"/><polygon points="11,9 21,14 11,19" fill="#444"/></svg>
+      <span>RIVE ANIMATION</span>
     </div>
-    <div class="tile-label">Accordion</div>
+    <div class="tile-meta">
+      <span class="tile-date">05 Apr 2025</span>
+      <span class="tile-label">Accordion</span>
+    </div>
   </div>
 
-  <!-- Segmented + swatch -->
+  <!-- Tile 7 -->
   <div class="tile">
-    <div class="tile-date">Apr 2025</div>
-    <div class="tile-content" style="flex-direction:column;gap:14px;width:100%;align-items:flex-start">
-      <div class="seg-wrap">
-        <button class="seg-btn active" onclick="setSeg(this)">S</button>
-        <button class="seg-btn" onclick="setSeg(this)">M</button>
-        <button class="seg-btn" onclick="setSeg(this)">L</button>
-        <button class="seg-btn" onclick="setSeg(this)">XL</button>
-      </div>
-      <div style="display:flex;gap:10px;align-items:center">
-        <div style="display:flex;gap:5px">
-          <div class="swatch active" style="background:#c9b99a" onclick="setSwatch(this,'#c9b99a')"></div>
-          <div class="swatch" style="background:#8a7a6a" onclick="setSwatch(this,'#8a7a6a')"></div>
-          <div class="swatch" style="background:#3a3a38" onclick="setSwatch(this,'#3a3a38')"></div>
-          <div class="swatch" style="background:#1c2c3c" onclick="setSwatch(this,'#1c2c3c')"></div>
-          <div class="swatch" style="background:#2c1c1c" onclick="setSwatch(this,'#2c1c1c')"></div>
-        </div>
-        <div class="swatch-preview" id="swatchPrev" style="background:#c9b99a"></div>
-      </div>
+    <canvas class="tile-rive-canvas" id="rive-7"></canvas>
+    <div class="tile-placeholder-icon" id="ph-7">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#444" stroke-width="1"/><polygon points="11,9 21,14 11,19" fill="#444"/></svg>
+      <span>RIVE ANIMATION</span>
     </div>
-    <div class="tile-label">Segmented + color picker</div>
-  </div>
-
-  <!-- Rive tile -->
-  <div class="tile tile-placeholder" style="padding:0;overflow:hidden;">
-    <div style="position:relative;width:100%;height:100%;">
-      <!-- REPLACE: swap canvas below with your .riv setup -->
-      <canvas id="rive-canvas-1" style="width:100%;height:100%;display:block;background:#0f0f0e;"></canvas>
-      <div id="rive-placeholder" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="14" cy="14" r="13" stroke="#252523" stroke-width="1"/>
-          <polygon points="11,9 21,14 11,19" fill="#252523"/>
-        </svg>
-        <span style="font-size:10px;color:#2a2a28;letter-spacing:0.08em">RIVE ANIMATION</span>
-      </div>
-      <!-- END REPLACE -->
-      <div class="rive-meta">
-        <span class="rive-date">07 May 2025</span>
-        <span class="rive-label">Your Rive component</span>
-      </div>
+    <div class="tile-meta">
+      <span class="tile-date">07 May 2025</span>
+      <span class="tile-label">Segmented control</span>
     </div>
   </div>
 
-  <!-- Placeholder 2 -->
-  <div class="tile tile-placeholder">
-    <div class="tile-date">Jun 2025</div>
-    <div class="tile-content" style="flex-direction:column;gap:10px;align-items:center;justify-content:center">
-      <div style="display:flex;gap:5px;align-items:flex-end;height:40px">
-        <div style="width:8px;height:20px;background:#1a1a18;border-radius:2px 2px 0 0"></div>
-        <div style="width:8px;height:32px;background:#1e1e1c;border-radius:2px 2px 0 0"></div>
-        <div style="width:8px;height:14px;background:#1a1a18;border-radius:2px 2px 0 0"></div>
-        <div style="width:8px;height:40px;background:#222220;border-radius:2px 2px 0 0"></div>
-        <div style="width:8px;height:24px;background:#1a1a18;border-radius:2px 2px 0 0"></div>
-        <div style="width:8px;height:36px;background:#1e1e1c;border-radius:2px 2px 0 0"></div>
-      </div>
-      <div style="width:70%;height:1px;background:#1a1a18"></div>
-      <div style="display:flex;flex-direction:column;gap:4px;width:70%">
-        <div style="height:5px;background:#161615;border-radius:2px"></div>
-        <div style="height:5px;background:#161615;border-radius:2px;width:75%"></div>
-      </div>
+  <!-- Tile 8 -->
+  <div class="tile">
+    <canvas class="tile-rive-canvas" id="rive-8"></canvas>
+    <div class="tile-placeholder-icon" id="ph-8">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#444" stroke-width="1"/><polygon points="11,9 21,14 11,19" fill="#444"/></svg>
+      <span>RIVE ANIMATION</span>
     </div>
-    <div class="tile-label">Coming soon</div>
+    <div class="tile-meta">
+      <span class="tile-date">21 Jun 2025</span>
+      <span class="tile-label">Coming soon</span>
+    </div>
   </div>
 
 </div>
 
 <script>
+const RIVE_SRC = 'https://raw.githubusercontent.com/leha-biceps/leha-biceps/main/rive_test.riv';
 
-
-
-
-document.getElementById('sliderInput').addEventListener('input', function() {
-  document.getElementById('sliderVal').textContent = this.value;
-  document.getElementById('sliderFill').style.width = this.value + '%';
-});
-
-document.querySelectorAll('.radio-item').forEach(el => {
-  el.addEventListener('click', () => {
-    el.closest('.radio-group').querySelectorAll('.radio-item').forEach(r => r.classList.remove('active'));
-    el.classList.add('active');
+function initRive(canvasId, src) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  new rive.Rive({
+    src,
+    canvas,
+    autoplay: true,
+    fit: rive.Fit.Cover,
+    alignment: rive.Alignment.Center,
+    onLoadError: () => {},
   });
+}
+
+window.addEventListener('load', () => {
+  initRive('rive-1', RIVE_SRC);
 });
-
-let step = 1;
-function updateSteps() {
-  const steps = document.querySelectorAll('.step');
-  const lines = document.querySelectorAll('.step-line');
-  steps.forEach((s, i) => {
-    s.classList.remove('done','active');
-    const dot = s.querySelector('.step-dot');
-    if (i < step) { s.classList.add('done'); dot.textContent = '✓'; }
-    else if (i === step) { s.classList.add('active'); dot.textContent = i+1; }
-    else dot.textContent = i+1;
-  });
-  lines.forEach((l, i) => l.classList.toggle('done', i < step));
-}
-function stepNext() { if(step < 3) { step++; updateSteps(); } }
-function stepBack() { if(step > 0) { step--; updateSteps(); } }
-
-function removeTag(x) { x.parentElement.remove(); }
-function handleTag(e) {
-  if (e.key === 'Enter' && e.target.value.trim()) {
-    const tag = document.createElement('div');
-    tag.className = 'tag';
-    tag.innerHTML = e.target.value.trim() + ' <span class="tag-x" onclick="removeTag(this)">×</span>';
-    e.target.parentElement.insertBefore(tag, e.target);
-    e.target.value = '';
-  }
-}
-
-function toggleAcc(head) {
-  const isOpen = head.classList.contains('open');
-  document.querySelectorAll('.acc-head').forEach(h => { h.classList.remove('open'); h.nextElementSibling.classList.remove('open'); });
-  if (!isOpen) { head.classList.add('open'); head.nextElementSibling.classList.add('open'); }
-}
-
-function setSeg(btn) {
-  btn.closest('.seg-wrap').querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-}
-
-function setSwatch(el, color) {
-  el.parentElement.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('swatchPrev').style.background = color;
-}
 </script>
 </body>
 </html>

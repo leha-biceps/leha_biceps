@@ -6,6 +6,7 @@
 <title>UI Portfolio</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { max-width: 100%; overflow-x: hidden; }
 
   body {
     background: #0a0a0a;
@@ -72,7 +73,8 @@
   .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
+    gap: 15px;
+    width: 100%;
   }
 
   .tile {
@@ -81,7 +83,7 @@
     border-radius: 8px;
     padding: 20px;
     position: relative;
-    min-height: 220px;
+    aspect-ratio: 4 / 3;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -110,6 +112,8 @@
   .tile-content {
     flex: 1; display: flex;
     align-items: center; justify-content: center;
+    min-width: 0;
+    overflow: hidden;
   }
 
   /* placeholder tiles */
@@ -234,6 +238,13 @@
   @media (max-width: 800px) {
     body { padding: 48px 20px 80px; }
     .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 520px) {
+    body { padding: 40px 16px 60px; }
+    .hero { margin-bottom: 48px; }
+    .hero-title { font-size: 13vw; }
+    .hero-desc { font-size: 14px; }
+    .grid { grid-template-columns: 1fr; gap: 10px; }
   }
 </style>
 </head>
@@ -392,21 +403,24 @@
     <div class="tile-label">Segmented + color picker</div>
   </div>
 
-  <!-- Placeholder 1 -->
+  <!-- Rive tile -->
   <div class="tile tile-placeholder">
     <div class="tile-date">May 2025</div>
-    <div class="tile-content" style="flex-direction:column;gap:12px;width:100%">
-      <div style="width:100%;height:6px;background:#1a1a18;border-radius:2px"></div>
-      <div style="display:flex;gap:6px">
-        <div style="flex:2;height:60px;background:#1a1a18;border-radius:4px"></div>
-        <div style="flex:1;display:flex;flex-direction:column;gap:5px">
-          <div style="height:27px;background:#1a1a18;border-radius:4px"></div>
-          <div style="height:27px;background:#161615;border-radius:4px"></div>
+    <div class="tile-content" style="width:100%;align-items:stretch">
+      <div style="position:relative;width:100%;flex:1;border-radius:5px;overflow:hidden;background:#0f0f0e;border:1px solid #1a1a18;min-height:140px">
+        <!-- REPLACE: swap the canvas+script below with your .riv file -->
+        <canvas id="rive-canvas-1" style="width:100%;height:100%;display:block"></canvas>
+        <div id="rive-placeholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;pointer-events:none">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="13" stroke="#252523" stroke-width="1"/>
+            <polygon points="11,9 21,14 11,19" fill="#252523"/>
+          </svg>
+          <span style="font-size:10px;color:#2a2a28;letter-spacing:0.08em">RIVE ANIMATION</span>
         </div>
+        <!-- END REPLACE -->
       </div>
-      <div style="width:60%;height:6px;background:#161615;border-radius:2px"></div>
     </div>
-    <div class="tile-label">Coming soon</div>
+    <div class="tile-label">Your Rive component</div>
   </div>
 
   <!-- Placeholder 2 -->
@@ -433,12 +447,21 @@
 </div>
 
 <script>
-const c = document.getElementById('noiseOverlay');
-const title = document.querySelector('.title-wrap h1');
+window.addEventListener('load', () => {
+  resizeNoise();
+});
+window.addEventListener('resize', resizeNoise);
+
 function resizeNoise() {
+  const title = document.querySelector('.title-wrap h1');
+  const c = document.getElementById('noiseOverlay');
+  if (!title || !c) return;
   const r = title.getBoundingClientRect();
-  c.width = r.width; c.height = r.height;
-  c.style.width = r.width + 'px'; c.style.height = r.height + 'px';
+  if (!r.width || !r.height) return;
+  c.width = Math.floor(r.width);
+  c.height = Math.floor(r.height);
+  c.style.width = r.width + 'px';
+  c.style.height = r.height + 'px';
   const ctx = c.getContext('2d');
   const img = ctx.createImageData(c.width, c.height);
   for (let i = 0; i < img.data.length; i += 4) {
@@ -448,8 +471,6 @@ function resizeNoise() {
   }
   ctx.putImageData(img, 0, 0);
 }
-window.addEventListener('load', resizeNoise);
-window.addEventListener('resize', resizeNoise);
 
 
 

@@ -8,25 +8,34 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { max-width: 100%; overflow-x: hidden; }
   body {
-    background: #0C0C0C;
+    background: #0a0a0a;
     color: #e8e8e6;
     font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
     min-height: 100vh;
     padding: 80px 48px 100px;
+    position: relative;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    top: -500px; left: -500px;
+    width: 1000px; height: 1000px;
+    background: radial-gradient(ellipse at center, rgba(50,70,160,0.22) 0%, rgba(25,35,100,0.1) 45%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    top: -350px; left: -350px;
+    width: 600px; height: 600px;
+    background: radial-gradient(ellipse at center, rgba(90,50,180,0.12) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
   }
 
-  .hero { max-width: 900px; margin-bottom: 80px; }
+  .hero { max-width: 900px; margin-bottom: 80px; position: relative; z-index: 1; }
   .title-wrap { position: relative; display: inline-block; margin-bottom: 28px; }
-  .title-wrap::after {
-    content: '';
-    position: absolute; inset: 0;
-    pointer-events: none;
-    border-radius: 4px;
-    opacity: 0.09;
-    mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 180px 180px;
-  }
   .hero-title {
     font-size: clamp(42px, 6vw, 88px);
     font-weight: 600;
@@ -37,24 +46,11 @@
     display: inline-block;
   }
   .hero-title-text {
-    background-image: linear-gradient(160deg, #ffffff 0%, #c0bdb8 40%, #7a7875 80%, #3a3835 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .hero-glow {
-    position: absolute;
-    top: 50%; left: 10%;
-    transform: translate(-50%, -50%);
-    width: 320px; height: 120px;
-    background: radial-gradient(ellipse, rgba(180,160,130,0.12) 0%, transparent 70%);
-    pointer-events: none;
-    filter: blur(20px);
-    z-index: 0;
+    color: #f0ede6;
   }
   .hero-desc {
     font-size: 15px;
-    color: #555552;
+    color: rgba(255,255,255,0.7);
     line-height: 1.7;
     max-width: 440px;
   }
@@ -64,6 +60,8 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     width: 100%;
+    position: relative;
+    z-index: 1;
   }
 
   .tile {
@@ -149,7 +147,6 @@
     <h1 class="hero-title">
       <span class="hero-title-text">Interface details.</span>
     </h1>
-    <div class="hero-glow"></div>
   </div>
   <p class="hero-desc">A collection of UI micro-solutions — interactions, components, and patterns I design and build. Each piece solves one specific problem.</p>
 </div>

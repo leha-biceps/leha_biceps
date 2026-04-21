@@ -259,12 +259,6 @@ function loadRive(callback) {
 function initRive(canvasId, src) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
-  const resize = () => {
-    canvas.width = canvas.offsetWidth * window.devicePixelRatio;
-    canvas.height = canvas.offsetHeight * window.devicePixelRatio;
-  };
-  resize();
-  window.addEventListener('resize', resize);
 
   const r = new rive.Rive({
     src,
@@ -273,9 +267,39 @@ function initRive(canvasId, src) {
     stateMachines: 'State Machine 1',
     fit: rive.Fit.Cover,
     alignment: rive.Alignment.Center,
+    useOffscreenRenderer: true,
     onLoadError: (e) => console.warn('Rive file error', e),
-    onLoad: () => r.resizeDrawingSurfaceToCanvas(),
+    onLoad: () => {
+      r.resizeDrawingSurfaceToCanvas();
+    },
   });
+
+  window.addEventListener('resize', () => r.resizeDrawingSurfaceToCanvas());
+
+  canvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const t = e.touches[0];
+    canvas.dispatchEvent(new PointerEvent('pointermove', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
+    canvas.dispatchEvent(new PointerEvent('pointerdown', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
+    canvas.dispatchEvent(new MouseEvent('mousemove', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
+    canvas.dispatchEvent(new MouseEvent('mouseenter', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
+    canvas.dispatchEvent(new MouseEvent('mousedown', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    const t = e.changedTouches[0];
+    canvas.dispatchEvent(new PointerEvent('pointerup', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
+    canvas.dispatchEvent(new MouseEvent('mouseup', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
+    canvas.dispatchEvent(new MouseEvent('click', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
+  }, { passive: false });
+
+  canvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    const t = e.touches[0];
+    canvas.dispatchEvent(new PointerEvent('pointermove', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
+    canvas.dispatchEvent(new MouseEvent('mousemove', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
+  }, { passive: false });
 }
 
 loadRive(() => {

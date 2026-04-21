@@ -269,41 +269,11 @@ function initRive(canvasId, src) {
     canvas,
     autoplay: true,
     stateMachines: 'State Machine 1',
-    artboard: canvasId === 'rive-2' ? 'Artboard' : undefined,
     fit: rive.Fit.Cover,
     alignment: rive.Alignment.Center,
     onLoadError: (e) => console.warn('Rive file error', e),
-    onLoad: () => { r.resizeDrawingSurfaceToCanvas(); }
+    onLoad: () => r.resizeDrawingSurfaceToCanvas(),
   });
-
-  canvas.style.pointerEvents = 'auto';
-  canvas.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    const t = e.touches[0];
-    const rect = canvas.getBoundingClientRect();
-    const x = t.clientX - rect.left;
-    const y = t.clientY - rect.top;
-    canvas.dispatchEvent(new PointerEvent('pointermove', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
-    canvas.dispatchEvent(new PointerEvent('pointerdown', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
-    canvas.dispatchEvent(new MouseEvent('mousemove', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
-    canvas.dispatchEvent(new MouseEvent('mouseenter', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
-    canvas.dispatchEvent(new MouseEvent('mousedown', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
-  }, { passive: false });
-
-  canvas.addEventListener('touchend', (e) => {
-    e.preventDefault();
-    const t = e.changedTouches[0];
-    canvas.dispatchEvent(new PointerEvent('pointerup', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
-    canvas.dispatchEvent(new MouseEvent('mouseup', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
-    canvas.dispatchEvent(new MouseEvent('click', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
-  }, { passive: false });
-
-  canvas.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    const t = e.touches[0];
-    canvas.dispatchEvent(new PointerEvent('pointermove', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
-    canvas.dispatchEvent(new MouseEvent('mousemove', { clientX: t.clientX, clientY: t.clientY, bubbles: true }));
-  }, { passive: false });
 }
 
 loadRive(() => {

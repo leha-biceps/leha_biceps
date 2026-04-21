@@ -268,13 +268,7 @@ function initRive(canvasId, src) {
     fit: rive.Fit.Cover,
     alignment: rive.Alignment.Center,
     onLoadError: (e) => console.warn('Rive file error', e),
-    onLoad: () => {
-      r.resizeDrawingSurfaceToCanvas();
-      try {
-        const vm = r.viewModelInstance();
-        if (vm) vm.bind(r);
-      } catch(e) {}
-    },
+    onLoad: () => r.resizeDrawingSurfaceToCanvas(),
   });
 
   window.addEventListener('resize', () => r.resizeDrawingSurfaceToCanvas());

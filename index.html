@@ -263,15 +263,13 @@ function initRive(canvasId, src) {
   const r = new rive.Rive({
     src,
     canvas,
-    autoplay: true,
-    stateMachines: 'State Machine 1',
+    autoplay: false,
     fit: rive.Fit.Cover,
     alignment: rive.Alignment.Center,
-    useOffscreenRenderer: true,
     onLoadError: (e) => console.warn('Rive file error', e),
     onLoad: () => {
       r.resizeDrawingSurfaceToCanvas();
-      r.play('State Machine 1');
+      r.playStateMachine('State Machine 1');
     },
   });
 

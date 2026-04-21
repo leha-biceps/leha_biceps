@@ -250,7 +250,7 @@ const RIVE_SRC = 'rive_test_01.riv';
 
 function loadRive(callback) {
   const s = document.createElement('script');
-  s.src = 'https://cdn.jsdelivr.net/npm/@rive-app/canvas@2.23.0/rive.js';
+  s.src = 'https://cdn.jsdelivr.net/npm/@rive-app/canvas@2.21.6/rive.js';
   s.onload = callback;
   s.onerror = () => console.warn('Failed to load Rive script');
   document.head.appendChild(s);
@@ -271,6 +271,7 @@ function initRive(canvasId, src) {
     onLoadError: (e) => console.warn('Rive file error', e),
     onLoad: () => {
       r.resizeDrawingSurfaceToCanvas();
+      r.play('State Machine 1');
     },
   });
 

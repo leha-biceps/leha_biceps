@@ -162,12 +162,8 @@
 
   <div class="tile">
     <canvas class="tile-rive-canvas" id="rive-1"></canvas>
-    <div class="tile-placeholder-icon" id="ph-1">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#444" stroke-width="1"/><polygon points="11,9 21,14 11,19" fill="#444"/></svg>
-      <span>RIVE ANIMATION</span>
-    </div>
     <div class="tile-meta">
-      <span class="tile-date">12 Jan 2025</span>
+      <span class="tile-date">22 Apr 2026</span>
       <span class="tile-label">Toggle states</span>
     </div>
   </div>
@@ -185,66 +181,6 @@
     <div class="tile-meta">
       <span class="tile-date">13 Apr 2026</span>
       <span class="tile-label">My first animation!</span>
-    </div>
-  </div>
-
-  <div class="tile">
-    <canvas class="tile-rive-canvas" id="rive-4"></canvas>
-    <div class="tile-placeholder-icon" id="ph-4">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#444" stroke-width="1"/><polygon points="11,9 21,14 11,19" fill="#444"/></svg>
-      <span>RIVE ANIMATION</span>
-    </div>
-    <div class="tile-meta">
-      <span class="tile-date">02 Mar 2025</span>
-      <span class="tile-label">Progress stepper</span>
-    </div>
-  </div>
-
-  <div class="tile">
-    <canvas class="tile-rive-canvas" id="rive-5"></canvas>
-    <div class="tile-placeholder-icon" id="ph-5">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#444" stroke-width="1"/><polygon points="11,9 21,14 11,19" fill="#444"/></svg>
-      <span>RIVE ANIMATION</span>
-    </div>
-    <div class="tile-meta">
-      <span class="tile-date">18 Mar 2025</span>
-      <span class="tile-label">Tag input</span>
-    </div>
-  </div>
-
-  <div class="tile">
-    <canvas class="tile-rive-canvas" id="rive-6"></canvas>
-    <div class="tile-placeholder-icon" id="ph-6">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#444" stroke-width="1"/><polygon points="11,9 21,14 11,19" fill="#444"/></svg>
-      <span>RIVE ANIMATION</span>
-    </div>
-    <div class="tile-meta">
-      <span class="tile-date">05 Apr 2025</span>
-      <span class="tile-label">Accordion</span>
-    </div>
-  </div>
-
-  <div class="tile">
-    <canvas class="tile-rive-canvas" id="rive-7"></canvas>
-    <div class="tile-placeholder-icon" id="ph-7">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#444" stroke-width="1"/><polygon points="11,9 21,14 11,19" fill="#444"/></svg>
-      <span>RIVE ANIMATION</span>
-    </div>
-    <div class="tile-meta">
-      <span class="tile-date">07 May 2025</span>
-      <span class="tile-label">Segmented control</span>
-    </div>
-  </div>
-
-  <div class="tile">
-    <canvas class="tile-rive-canvas" id="rive-8"></canvas>
-    <div class="tile-placeholder-icon" id="ph-8">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="#444" stroke-width="1"/><polygon points="11,9 21,14 11,19" fill="#444"/></svg>
-      <span>RIVE ANIMATION</span>
-    </div>
-    <div class="tile-meta">
-      <span class="tile-date">21 Jun 2025</span>
-      <span class="tile-label">Coming soon</span>
     </div>
   </div>
 
@@ -305,6 +241,7 @@ function initRive(canvasId, src) {
 }
 
 loadRive(() => {
+  initRive('rive-1', 'anim_04.riv');
   initRive('rive-2', 'rive_test_03.riv');
   initRive('rive-3', RIVE_SRC);
 });

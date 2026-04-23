@@ -35,7 +35,44 @@
   }
 
   .hero { max-width: 900px; margin-bottom: 80px; position: relative; z-index: 1; }
-  .hero-gif {
+  .topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 24px 48px;
+    display: flex;
+    justify-content: flex-end;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .topbar-link {
+    pointer-events: auto;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1px solid #2a2a28;
+    display: flex; align-items: center; justify-content: center;
+    color: #6b6b69;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .topbar-link:hover { border-color: #555552; color: #e8e8e6; }
+  .topbar-link svg { width: 16px; height: 16px; }
+
+  .hero-name {
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 500;
+    color: #3a3a38;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+    font-family: 'Courier New', monospace;
+  }
+  .hero-subtitle {
+    font-size: clamp(24px, 3.5vw, 44px);
+    font-weight: 600;
+    color: #f0ede6;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
     display: block;
     width: 70%;
     max-width: 630px;
@@ -56,7 +93,7 @@
     color: #f0ede6;
   }
   .hero-desc {
-    font-size: 17px;
+    font-size: 18px;
     color: rgba(255,255,255,0.7);
     line-height: 1.7;
     max-width: 440px;
@@ -144,7 +181,7 @@
     body { padding: 40px 16px 60px; }
     .hero { margin-bottom: 48px; }
     .hero-title { font-size: 13vw; }
-    .hero-desc { font-size: 18px; }
+    .hero-desc { font-size: 14px; }
     .grid { grid-template-columns: 1fr; gap: 10px; }
   }
 </style>
@@ -155,7 +192,7 @@
   <div class="title-wrap">
     <img src="header.gif" alt="Interface details" class="hero-gif">
   </div>
-  <p class="hero-desc">Hi, I'm Alexey — a motion designer.<br>Here are my notes on exploring Rive<br>and interactive design.</p>
+  <p class="hero-desc">Hi, I'm Alexey — a motion designer.<br>Here are my notes on exploring Rive<br>and interactive design.<br><br>Telegram: @leha_biceps</p>
 </div>
 
 <div class="grid">
@@ -164,7 +201,6 @@
     <canvas class="tile-rive-canvas" id="rive-1"></canvas>
     <div class="tile-meta">
       <span class="tile-date">22 Apr 2026</span>
-      <span class="tile-label">Toggle states</span>
     </div>
   </div>
 
@@ -172,7 +208,6 @@
     <canvas class="tile-rive-canvas" id="rive-2"></canvas>
     <div class="tile-meta">
       <span class="tile-date">20 Apr 2026</span>
-      <span class="tile-label">Drawn in Figma, animated in Rive.</span>
     </div>
   </div>
 
@@ -180,7 +215,6 @@
     <canvas class="tile-rive-canvas" id="rive-3"></canvas>
     <div class="tile-meta">
       <span class="tile-date">13 Apr 2026</span>
-      <span class="tile-label">My first animation!</span>
     </div>
   </div>
 

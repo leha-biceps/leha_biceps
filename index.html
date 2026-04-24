@@ -35,62 +35,13 @@
   }
 
   .hero { max-width: 900px; margin-bottom: 80px; position: relative; z-index: 1; }
-  .topbar {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    padding: 24px 48px;
-    display: flex;
-    justify-content: flex-end;
-    z-index: 10;
-    pointer-events: none;
-  }
-  .topbar-link {
-    pointer-events: auto;
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    border: 1px solid #2a2a28;
-    display: flex; align-items: center; justify-content: center;
-    color: #6b6b69;
-    text-decoration: none;
-    transition: border-color 0.2s, color 0.2s;
-  }
-  .topbar-link:hover { border-color: #555552; color: #e8e8e6; }
-  .topbar-link svg { width: 16px; height: 16px; }
-
-  .hero-name {
-    font-size: clamp(28px, 4vw, 52px);
-    font-weight: 500;
-    color: #3a3a38;
-    letter-spacing: -0.02em;
-    margin-bottom: 24px;
-    font-family: 'Courier New', monospace;
-  }
-  .hero-subtitle {
-    font-size: clamp(24px, 3.5vw, 44px);
-    font-weight: 600;
-    color: #f0ede6;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    margin-bottom: 20px;
-  }
+  .hero-gif {
     display: block;
-    width: 39%;
-    max-width: 353px;
+    width: 70%;
+    max-width: 630px;
     height: auto;
     margin-bottom: 28px;
     margin-top: -20px;
-  }
-  .hero-title {
-    font-size: clamp(42px, 6vw, 88px);
-    font-weight: 600;
-    line-height: 1.0;
-    letter-spacing: -0.03em;
-    margin-bottom: 0;
-    position: relative;
-    display: inline-block;
-  }
-  .hero-title-text {
-    color: #f0ede6;
   }
   .hero-desc {
     font-size: 18px;
@@ -98,6 +49,12 @@
     line-height: 1.7;
     max-width: 440px;
   }
+  .hero-desc-tg {
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .hero-desc-tg:hover { color: rgba(255,255,255,0.8); }
 
   .grid {
     display: grid;
@@ -162,7 +119,6 @@
   .tile:hover .tile-meta { opacity: 0.3; }
 
   .tile-date { font-size: 10px; color: #9a9a98; letter-spacing: 0.1em; text-transform: uppercase; }
-  .tile-label { font-size: 11px; color: #6b6b69; letter-spacing: 0.04em; }
 
   @media (hover: none) {
     .tile:hover {
@@ -180,8 +136,7 @@
   @media (max-width: 520px) {
     body { padding: 40px 16px 60px; }
     .hero { margin-bottom: 48px; }
-    .hero-title { font-size: 13vw; }
-    .hero-desc { font-size: 14px; }
+    .hero-desc { font-size: 15px; }
     .grid { grid-template-columns: 1fr; gap: 10px; }
   }
 </style>
@@ -225,7 +180,7 @@ const RIVE_SRC = 'rive_test_01.riv';
 
 function loadRive(callback) {
   const s = document.createElement('script');
-  s.src = 'https://cdn.jsdelivr.net/npm/@rive-app/canvas@2.35.3/rive.js';
+  s.src = 'https://cdn.jsdelivr.net/npm/@rive-app/canvas@2.17.3/rive.js';
   s.onload = callback;
   s.onerror = () => console.warn('Failed to load Rive script');
   document.head.appendChild(s);

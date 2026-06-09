@@ -153,6 +153,13 @@
 <div class="grid">
 
   <div class="tile">
+    <canvas class="tile-rive-canvas" id="rive-0"></canvas>
+    <div class="tile-meta">
+      <span class="tile-date">09 Jun 2026</span>
+    </div>
+  </div>
+
+  <div class="tile">
     <canvas class="tile-rive-canvas" id="rive-1"></canvas>
     <div class="tile-meta">
       <span class="tile-date">22 Apr 2026</span>
@@ -230,6 +237,7 @@ function initRive(canvasId, src) {
 }
 
 loadRive(() => {
+  initRive('rive-0', 'Car.riv');
   initRive('rive-1', 'anim_04.riv');
   initRive('rive-2', 'rive_test_03.riv');
   initRive('rive-3', RIVE_SRC);

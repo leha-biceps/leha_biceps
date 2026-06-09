@@ -201,22 +201,13 @@ function initRive(canvasId, src) {
     src,
     canvas,
     autoplay: true,
+    autoBind: true,
     stateMachines: 'State Machine 1',
     fit: rive.Fit.Cover,
     alignment: rive.Alignment.Center,
     onLoadError: (e) => console.warn('Rive file error', e),
     onLoad: () => {
       r.resizeDrawingSurfaceToCanvas();
-      // инициализируем ViewModel для новых анимаций
-      try {
-        const vm = r.defaultArtboardInstance?.viewModel;
-        if (vm) {
-          const vmi = vm.defaultInstance();
-          if (vmi) r.bindViewModelInstance(vmi);
-        }
-      } catch(e) {
-        // старые анимации — пропускаем
-      }
     },
   });
 
